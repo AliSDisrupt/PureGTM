@@ -8,7 +8,15 @@ function resolveAppBaseUrl(request: NextRequest): string {
   if (configuredBase) {
     return configuredBase.replace(/\/+$/, "");
   }
-  return request.nextUrl.origin;
+  const forwardedProto = request.headers.get("x-forwarded-proto");
+  const forwardedHost = request.headers.get("x-forwarded-host");
+  if (forwardedProto && forwardedHost && !forwardedHost.includes(".railway.internal")) {
+    return `${forwardedProto}://${forwardedHost}`.replace(/\/+$/, "");
+  }
+  if (!request.nextUrl.host.includes(".railway.internal")) {
+    return request.nextUrl.origin;
+  }
+  return "https://gtmpurewl.up.railway.app";
 }
 
 function resolveGoogleRedirectUri(request: NextRequest): string {
