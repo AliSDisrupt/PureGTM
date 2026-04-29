@@ -4,6 +4,14 @@ import { appendLoginAudit, getClientIp } from "../../../../../lib/loginAudit";
 const ALLOWED_DOMAINS = new Set(["purevpn.com", "purewl.com", "disrupt.com"]);
 const GOOGLE_CALLBACK_PATH = "/api/auth/google/callback";
 
+function resolveAppBaseUrl(request: NextRequest): string {
+  const configuredBase = String(process.env.APP_BASE_URL ?? "").trim();
+  if (configuredBase) {
+    return configuredBase.replace(/\/+$/, "");
+  }
+  return request.nextUrl.origin;
+}
+
 type GoogleTokenResponse = {
   access_token?: string;
 };
@@ -23,13 +31,7 @@ function resolveGoogleRedirectUri(request: NextRequest): string {
     return `${configured.replace(/\/+$/, "")}${GOOGLE_CALLBACK_PATH}`;
   }
 
-  const forwardedProto = request.headers.get("x-forwarded-proto");
-  const forwardedHost = request.headers.get("x-forwarded-host");
-  if (forwardedProto && forwardedHost) {
-    return `${forwardedProto}://${forwardedHost}${GOOGLE_CALLBACK_PATH}`;
-  }
-
-  return `${request.nextUrl.origin}${GOOGLE_CALLBACK_PATH}`;
+  return `${resolveAppBaseUrl(request)}${GOOGLE_CALLBACK_PATH}`;
 }
 
 export async function GET(request: NextRequest) {
@@ -83,7 +85,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL("/login?error=domain_not_allowed", request.url));
   }
 
-  const response = NextResponse.redirect(new URL("/", request.url));
+  const response = NextResponse.redirect(new URL("/", `${resolveAppBaseUrl(request)}/`));
   response.cookies.set("purewl_auth", email, {
     httpOnly: true,
     sameSite: "lax",

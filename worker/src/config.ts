@@ -10,6 +10,7 @@ const envSchema = z.object({
   DATABASE_URL: z.string().min(1),
   REDIS_URL: z.string().min(1),
   WINDSOR_CONNECTOR_URL: z.string().url().optional(),
+  WINDSOR_DATE_PRESET: z.string().optional(),
   WINDSOR_ACCOUNT_GOOGLE_ADS: z.string().optional(),
   WINDSOR_ACCOUNT_HUBSPOT: z.string().optional(),
   WINDSOR_ACCOUNT_LEMLIST: z.string().optional(),

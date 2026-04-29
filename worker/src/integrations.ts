@@ -64,27 +64,27 @@ type LemlistCampaignStats = {
 const sourceConfig: Record<SourceName, { datasourcePrefix?: string; accountName?: string }> = {
   google_ads: {
     datasourcePrefix: "google_ads",
-    accountName: env.WINDSOR_ACCOUNT_GOOGLE_ADS
+    accountName: "PureVPN B2B - Business VPN"
   },
   hubspot: {
     datasourcePrefix: "hubspot",
-    accountName: env.WINDSOR_ACCOUNT_HUBSPOT
+    accountName: "purewl.com"
   },
   lemlist: {
     datasourcePrefix: "lemlist",
-    accountName: env.WINDSOR_ACCOUNT_LEMLIST
+    accountName: "139"
   },
   linkedin_forms: {
     datasourcePrefix: "linkedin",
-    accountName: env.WINDSOR_ACCOUNT_LINKEDIN
+    accountName: "PureVPN - Partner & Enterprise Solutions"
   },
   reddit_ads: {
     datasourcePrefix: "reddit",
-    accountName: env.WINDSOR_ACCOUNT_REDDIT
+    accountName: "admin_PureWL"
   },
   ga4: {
     datasourcePrefix: "googleanalytics4",
-    accountName: env.WINDSOR_ACCOUNT_GA4
+    accountName: "googleanalytics4__PureWL - PureVPN/WL"
   },
   windsor: {
     datasourcePrefix: "windsor"
@@ -203,7 +203,10 @@ async function fetchWindsorRows(): Promise<WindsorRow[]> {
   }
 
   const url = new URL(env.WINDSOR_CONNECTOR_URL);
-  url.searchParams.set("date_preset", "last_90d");
+  const configuredDatePreset = String(env.WINDSOR_DATE_PRESET ?? "").trim();
+  if (configuredDatePreset) {
+    url.searchParams.set("date_preset", configuredDatePreset);
+  }
   url.searchParams.set(
     "fields",
     "account_name,campaign,clicks,impressions,datasource,date,source,spend,sessions,conversions,event_name,event,event_count,email,activities___id"

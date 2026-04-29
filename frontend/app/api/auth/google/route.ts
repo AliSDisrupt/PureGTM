@@ -3,6 +3,14 @@ import { NextRequest, NextResponse } from "next/server";
 const GOOGLE_AUTH_BASE = "https://accounts.google.com/o/oauth2/v2/auth";
 const GOOGLE_CALLBACK_PATH = "/api/auth/google/callback";
 
+function resolveAppBaseUrl(request: NextRequest): string {
+  const configuredBase = String(process.env.APP_BASE_URL ?? "").trim();
+  if (configuredBase) {
+    return configuredBase.replace(/\/+$/, "");
+  }
+  return request.nextUrl.origin;
+}
+
 function resolveGoogleRedirectUri(request: NextRequest): string {
   const configured = String(process.env.GOOGLE_OAUTH_REDIRECT_URI ?? "").trim();
   if (configured) {
@@ -11,14 +19,7 @@ function resolveGoogleRedirectUri(request: NextRequest): string {
     }
     return `${configured.replace(/\/+$/, "")}${GOOGLE_CALLBACK_PATH}`;
   }
-
-  const forwardedProto = request.headers.get("x-forwarded-proto");
-  const forwardedHost = request.headers.get("x-forwarded-host");
-  if (forwardedProto && forwardedHost) {
-    return `${forwardedProto}://${forwardedHost}${GOOGLE_CALLBACK_PATH}`;
-  }
-
-  return `${request.nextUrl.origin}${GOOGLE_CALLBACK_PATH}`;
+  return `${resolveAppBaseUrl(request)}${GOOGLE_CALLBACK_PATH}`;
 }
 
 export async function GET(request: NextRequest) {
