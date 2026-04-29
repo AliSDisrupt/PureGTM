@@ -126,7 +126,7 @@ type SourceBreakdown = {
 };
 
 async function fetchJson<T>(path: string): Promise<T> {
-  const baseUrl = process.env.API_BASE_URL ?? "http://localhost:4000";
+  const baseUrl = process.env.API_BASE_URL ?? "/api/data";
   try {
     const response = await fetch(`${baseUrl}${path}`, { cache: "no-store" });
     if (!response.ok) {
@@ -420,7 +420,7 @@ export default async function DashboardPage({ searchParams }: { searchParams?: S
 
           {!hasBackendData ? (
             <section className="sketch-card warningCard">
-              Backend data is unavailable right now. Start PostgreSQL + Redis and backend to load live metrics.
+              Live data is not available yet. Dashboard is running in fallback mode with empty metrics until data is synced.
             </section>
           ) : null}
 

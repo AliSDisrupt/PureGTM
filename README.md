@@ -12,9 +12,7 @@ Custom monorepo for a 15-30 minute refresh dashboard that combines:
 
 ## Structure
 
-- `frontend`: Next.js dashboard UI.
-- `backend`: API for KPI and campaign analytics queries.
-- `worker`: Scheduled ingestion, normalization, and matching jobs.
+- `frontend`: Single Next.js app (UI + API routes).
 - `db`: SQL schema and migration scripts.
 
 ## Quick Start
