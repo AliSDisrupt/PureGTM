@@ -25,6 +25,12 @@ Custom monorepo for a 15-30 minute refresh dashboard that combines:
 3. Start services:
    - `npm run dev`
 
+## Railway (Single Service)
+
+- Build command: `npm run build`
+- Start command: `npm start`
+- This runs frontend, backend, and worker in one Railway service.
+
 ## Data Flow
 
 1. `worker` pulls platform APIs every 15-30 minutes.
